@@ -12,6 +12,7 @@ import { EmailProvider } from './components/EmailContext';
 import ForgotPassword from './components/ForgotPassword';
 import VerifyAndResetPassword from './components/VerifyAndResetPassword';
 import AdminAddUser from './components/AdminAddUser';
+import MultiPageFormModal from './components/MultiPageFormModal';
 
 function App() {
   const isLoggedIn = !!localStorage.getItem('token');
@@ -24,6 +25,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path='/admin-adduser' element={<AdminAddUser/>}/>
+            <Route path="/multipage-form" element={<MultiPageFormModal/>} />
             <Route path="/verify-otp" element={<OtpVerificationForm />} />
             <Route path='/forgot-password' element={<ForgotPassword/>} />
             <Route path='/reset-password' element={<VerifyAndResetPassword/>}/>

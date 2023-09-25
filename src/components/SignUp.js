@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEmail } from './EmailContext';
 import axios from 'axios';
+import MultiPageFormModal from './MultiPageFormModal'; // Import the MultiPageFormModal component
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -12,9 +13,20 @@ const Signup = () => {
 
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(true);
   const [allUsernames, setAllUsernames] = useState([]);
+  const [showModal, setShowModal] = useState(false); // State to control the modal
 
   const { setEmail } = useEmail();
   const navigate = useNavigate();
+
+  // Function to check if the email address does not have the extension "gmail.com"
+  const isNonGmailEmail = (email) => {
+    const emailParts = email.split('@');
+    if (emailParts.length === 2) {
+      const domain = emailParts[1].toLowerCase();
+      return domain !== 'gmail.com';
+    }
+    return false;
+  };
 
   useEffect(() => {
     // Fetch the list of all usernames when the component mounts
@@ -73,6 +85,11 @@ const Signup = () => {
     }
   };
 
+  // Function to handle modal close
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
@@ -125,7 +142,7 @@ const Signup = () => {
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary btn-block mt-3">
+                <button type="submit" className="btn btn-primary btn-block mt-3" onClick={() => setShowModal(true)}>
                   Sign Up
                 </button>
               </form>
@@ -133,6 +150,9 @@ const Signup = () => {
           </div>
         </div>
       </div>
+      {isNonGmailEmail(formData.email) && showModal && (
+        <MultiPageFormModal showModal={showModal} handleClose={handleCloseModal} />
+      )}
     </div>
   );
 };

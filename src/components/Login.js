@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from 'axios'; // Import Axios
+import './Login.css';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -78,7 +79,7 @@ const Login = () => {
         <div className="container mt-5">
             <div className="row justify-content-center">
                 <div className="col-md-6">
-                    <div className="card">
+                    <div className="card my-custom-card">
                         <div className="card-header">
                             <h4>Login</h4>
                         </div>
