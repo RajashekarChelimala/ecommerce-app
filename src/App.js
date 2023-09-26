@@ -1,23 +1,37 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import { Navbar } from './components/Navbar';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import SignUp from './components/SignUp';
+import Login from './components/Login';
+import AdminDashboard from './components/AdminDashboard';
+import { Routes, Route } from 'react-router-dom';
+import Home from './components/Home';
+import OtpVerificationForm from './components/OtpVerificationForm';
+import { EmailProvider } from './components/EmailContext';
+import ForgotPassword from './components/ForgotPassword';
+import VerifyAndResetPassword from './components/VerifyAndResetPassword';
+import AdminAddUser from './components/AdminAddUser';
+import MultiPageFormModal from './components/MultiPageFormModal';
 
 function App() {
+  const isLoggedIn = !!localStorage.getItem('token');
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar isAuthenticated={isLoggedIn} />
+        <EmailProvider>
+          <Routes>
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path='/admin-adduser' element={<AdminAddUser/>}/>
+            <Route path="/multipage-form" element={<MultiPageFormModal/>} />
+            <Route path="/verify-otp" element={<OtpVerificationForm />} />
+            <Route path='/forgot-password' element={<ForgotPassword/>} />
+            <Route path='/reset-password' element={<VerifyAndResetPassword/>}/>
+            <Route exact path="/home" element={<Home />} />
+          </Routes>
+        </EmailProvider>
     </div>
   );
 }
