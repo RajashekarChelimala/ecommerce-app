@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReCAPTCHA from "react-google-recaptcha";
-import axios from 'axios'; // Import Axios
-import './Login.css';
+import axios from 'axios';
+import axiosInstance from './api';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -16,9 +16,25 @@ const Login = () => {
     useEffect(() => {
         // Check if the user is already logged in (token exists)
         const token = localStorage.getItem('token');
+        console.log("Heloooooooooooooooo");
         if (token) {
-            // Redirect to the home page or any other authenticated route
-            navigate('/admin'); // Change '/home' to the appropriate route
+            try {
+                // Decode the JWT token to get the expiration timestamp
+                const tokenPayload = JSON.parse(atob(token.split('.')[1]));
+                const expirationTimestamp = tokenPayload.exp * 1000; // Convert to milliseconds
+                console.log("Exp::::>"+expirationTimestamp);
+                
+                // Check if the token has expired
+                if (Date.now() >= expirationTimestamp) {
+                    // Token is  expired, remove it and log the user out
+                    localStorage.removeItem('token');
+                } else {
+                    // Token is still valid, redirect to the home page
+                    navigate('/');
+                }
+            } catch (error) {
+                console.error('Error decoding token:', error);
+            }
         }
     }, [navigate]);
 
@@ -44,7 +60,7 @@ const Login = () => {
         try {
             // Your login logic here...
             // If the reCAPTCHA is verified, you can proceed with login.
-            const response = await axios.post('http://localhost:8080/api/users/login', formData, {
+            const response = await axiosInstance.post('/api/users/login', formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -60,18 +76,15 @@ const Login = () => {
                     localStorage.setItem('token', data.token);
 
                     // Navigate to the home page
-                    navigate('/admin'); // Use the navigate function
+                    navigate('/');
                 } catch (error) {
                     console.error('Error parsing response JSON:', error);
-                    // Handle the error, e.g., display an error message to the user
                 }
             } else {
-                // Handle login failure, e.g., display an error message
                 console.error('Login failed');
             }
 
         } catch (error) {
-            // Handle network errors, e.g., display a network error message
             console.error('Network error:', error);
         }
     };
@@ -79,7 +92,7 @@ const Login = () => {
         <div className="container mt-5">
             <div className="row justify-content-center">
                 <div className="col-md-6">
-                    <div className="card my-custom-card">
+                    <div className="card">
                         <div className="card-header">
                             <h4>Login</h4>
                         </div>
